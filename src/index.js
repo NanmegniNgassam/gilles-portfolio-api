@@ -14,11 +14,16 @@ app.post('/offers', (req, res) => {
   const data = req.body;
   if(data) {
     // Save the actual offer inside the dedicated database
+    db.query(`INSERT INTO offers (subject, body) VALUES ('${data['subject']}', '${data['body']}');`, (error, result) => {
+      if (error) {
+        res.status(500).json({ log : 'Database connection error', error });
+      } else {
+        res.json({ subject: data['subject'], body: data['body'] });
+      }
+    });
 
-    res.json({ message: `Current offer has been successfully saved`, offer: data});
   } else {
-    res.statusCode = 401;
-    res.json({ message: 'The current offer is empty' });
+    res.status(401).json({ message: 'The current offer is empty' });
   }
 })
 
@@ -26,7 +31,7 @@ app.post('/offers', (req, res) => {
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'gillesng_dev',
-  password: ']q&C3)}U)sb0',
+  password: process.env.USER_PASSWORD,
   database: 'gillesng_portfolio'
 });
 
@@ -42,4 +47,3 @@ db.connect((error) => {
     })
   }
 })
-  
