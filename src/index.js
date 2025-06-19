@@ -6,7 +6,14 @@ const PORT = process.env.PORT || 3000
 
 app.use(express.json());
 
-app.get('/', (req, res) => {
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
+
+app.get('/', (_, res) => {
   res.send('Welcome on my portfolio api !');
 })
 
@@ -31,7 +38,7 @@ app.post('/offers', (req, res) => {
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'gillesng_dev',
-  password: process.env.USER_PASSWORD,
+  password: ']q&C3)}U)sb0',
   database: 'gillesng_portfolio'
 });
 
