@@ -21,7 +21,7 @@ app.post('/offers', (req, res) => {
   const data = req.body;
   if(data) {
     // Save the actual offer inside the dedicated database
-    db.query(`INSERT INTO offers (subject, body) VALUES ('${data['subject']}', '${data['body']}');`, (error, result) => {
+    db.query(`INSERT INTO offers (subject, body) VALUES ("${data['subject']}", "${data['body']}");`, (error, result) => {
       if (error) {
         res.status(500).json({ log : 'Database connection error', error });
       } else {
@@ -38,7 +38,7 @@ app.post('/offers', (req, res) => {
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'gillesng_dev',
-  password: ']q&C3)}U)sb0',
+  password: process.env.USER_PASSWORD,
   database: 'gillesng_portfolio'
 });
 
