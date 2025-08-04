@@ -29,6 +29,8 @@ app.post('/offers', (req, res) => {
       }
     });
 
+    // Send the email to the owner of the portfolio
+
   } else {
     res.status(401).json({ message: 'The current offer is empty' });
   }
@@ -36,10 +38,10 @@ app.post('/offers', (req, res) => {
 
 // Preparing the db connection
 const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'gillesng_dev',
+  host: process.env.HOST_URL,
+  user: process.env.USER_NAME,
   password: process.env.USER_PASSWORD,
-  database: 'gillesng_portfolio'
+  database: process.env.DATABASE_NAME
 });
 
 
