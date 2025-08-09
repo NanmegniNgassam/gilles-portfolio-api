@@ -1,7 +1,6 @@
 require('dotenv').config();
 const { Resend } = require('resend');
 const express = require('express');
-const mysql = require('mysql2');
 
 const app = express();
 const PORT = process.env.PORT || 3000
@@ -31,8 +30,10 @@ app.post('/offers', async (req, res) => {
     });
 
     if(response.error) {
-      res.status(501).json({ message: "The email wasn't delivered!", error: response.error })
+      return res.status(501).json({ message: "The email wasn't delivered!", error: response.error })
     }
+
+    return res.status(200).json(response);
   } else {
     res.status(401).json({ message: 'The current offer is empty' });
   }
