@@ -41,11 +41,11 @@ app.post('/offers', async (req, res) => {
 });
 
 const db = mysql.createConnection({
-  host: 'localhost',
-  port: 3306,
-  user: 'gillesng_dev',
+  host: process.env.HOST_URL,
+  port: process.env.PORT,
+  user: process.env.USER_NAME,
   password: process.env.USER_PASSWORD,
-  database: 'gillesng_portfolio'
+  database: process.env.DATABASE_NAME
 })
 
 // Running the server
