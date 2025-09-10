@@ -28,6 +28,17 @@ app.get('/', (_, res) => {
   res.send('Welcome on my portfolio api !');
 })
 
+app.get('/offers', async (req, res) => {
+  const query = 'SELECT * FROM offers'
+  db.query(query, (err, offers) => {
+    if (err) {
+      console.error('DATABASE ERROR occuring while fetching offer : ', err.message);
+      return res.status(500).json({ message: 'Database error' });
+    }
+    res.status(200).json(offers);
+  });
+})
+
 app.post('/offers', async (req, res) => {
   const resend = new Resend(process.env.RESEND_API_KEY);
   const data = req.body;
