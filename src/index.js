@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { Resend } = require('resend');
 const express = require('express');
+const mysql = require('mysql2')
 
 const app = express();
 const PORT = process.env.PORT || 3000
@@ -37,9 +38,23 @@ app.post('/offers', async (req, res) => {
   } else {
     res.status(401).json({ message: 'The current offer is empty' });
   }
+});
+
+const db = mysql.createConnection({
+  host: 'localhost',
+  port: 3306,
+  user: 'gillesng_dev',
+  password: process.env.USER_PASSWORD,
+  database: 'gillesng_portfolio'
 })
 
 // Running the server
-app.listen(PORT, () => {
-  console.log(`Your application is running on port : ${PORT}`);
+db.connect((error) => {
+  if (error) {
+    console.error('❌ Failed to connect to MySQL:', error.code, error.message);
+  } else {
+    app.listen(PORT, () => {
+      console.log(`Your application is running on port : ${PORT}`);
+    })
+  }
 })
