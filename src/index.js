@@ -7,10 +7,20 @@ const app = express();
 const PORT = process.env.PORT || 3000
 app.use(express.json());
 
+const allowedOrigins = [
+  'https://gilles-ngassam.pisoftlite.com',
+  'https://gillesngassam.com'
+];
+
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+  const origin = req.headers.origin;
+
+  if(allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
   next();
 });
 
@@ -22,6 +32,13 @@ app.post('/offers', async (req, res) => {
   const resend = new Resend(process.env.RESEND_API_KEY);
   const data = req.body;
   if(data) {
+    // Save the offer inside the database
+    db.query(`INSERT INTO offers (subject, body) VALUES ("${data['subject']}", "${data['body']}");`, (error, result) => {
+      if (error) {
+        res.status(500).json({ log : 'Database connection error', error });
+      }
+    });
+
     // Send the email to the owner of the portfolio
     const response = await resend.emails.send({
       from: 'gilles@api.gillesngassam.com',
@@ -34,7 +51,7 @@ app.post('/offers', async (req, res) => {
       return res.status(501).json({ message: "The email wasn't delivered!", error: response.error })
     }
 
-    return res.status(200).json(response);
+    return res.status(200).json({ subject: data['subject'], body: data['body'] });;
   } else {
     res.status(401).json({ message: 'The current offer is empty' });
   }
