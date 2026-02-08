@@ -11,7 +11,8 @@ const allowedOrigins = [
   'https://gilles-ngassam.pisoftlite.com',
   'https://gillesngassam.com',
   'https://studelecta.gillesngassam.com',
-  'https://studelectaconsulting.com'
+  'https://studelectaconsulting.com',
+  'https://www.pisoftlite.com'
 ];
 
 app.use((req, res, next) => {
@@ -73,6 +74,29 @@ app.post('/offers', async (req, res) => {
 app.post('/studelecta', async (req, res) => {
   const resend = new Resend(process.env.RESEND_API_KEY);
   const data = req.body;
+  if(data) {
+    // Send the email to the owner of the portfolio
+    const response = await resend.emails.send({
+      from: 'gilles@api.gillesngassam.com',
+      to: data['receiver'],
+      subject: data['subject'],
+      html: data['body'],
+    });
+
+    if(response.error) {
+      return res.status(501).json({ message: "The email wasn't delivered!", error: response.error })
+    }
+
+    return res.status(200).json({ subject: data['subject'], body: data['body'], receiver: data['receiver'] });
+  } else {
+    res.status(401).json({ message: 'The current contact opportunity is empty' });
+  }
+});
+
+app.post('/pisoftlite', async (req, res) => {
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const data = req.body;
+
   if(data) {
     // Send the email to the owner of the portfolio
     const response = await resend.emails.send({
